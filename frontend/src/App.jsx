@@ -356,7 +356,16 @@ function App() {
             >
               @MohitSahoo
             </a>
-            {' '}| TerminAItor
+            {' '}| TerminAItor |{' '}
+            <a
+              href="https://github.com/MohitSahoo/TerminAItor/blob/main/CLI_SETUP.md"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-link cli-link"
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: '14px', verticalAlign: 'middle' }}>terminal</span>
+              {' '}Use in Terminal
+            </a>
           </span>
         </div>
       </footer>

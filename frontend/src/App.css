@@ -803,6 +803,21 @@
   width: 100%;
 }
 
+.cli-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.cli-link:hover {
+  background: rgba(255, 215, 0, 0.2);
+  transform: translateY(-2px);
+}
+
 /* Text Glitch on Hover */
 .editor-title:hover {
   animation: glitch 0.3s ease-in-out;
