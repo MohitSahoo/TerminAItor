@@ -1,0 +1,126 @@
+{
+  "name": "TerminAItor - AI Command Assistant",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "autocomplete",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const userText = $input.item.json.body.text || '';\n\nconst prompt = `You are an expert terminal command assistant. Given a partial command or task description, suggest 3 different terminal commands or completions.\n\nRules:\n- If input looks like a partial command, suggest completions with common flags/options\n- If input is a task description, suggest appropriate commands\n- Include brief explanations in format: command # explanation\n- Focus on bash/zsh commands for Linux/macOS\n- Suggest practical, commonly used options\n\nInput: \"${userText}\"\n\nReturn exactly 3 suggestions as a numbered list (1., 2., 3.). Format: command # brief explanation`;\n\nreturn {\n  json: {\n    prompt: prompt,\n    originalText: userText\n  }\n};"
+      },
+      "id": "prompt-constructor",
+      "name": "Construct Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "={{ $credentials.apiKey }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": []
+        },
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"{{ $json.prompt }}\"\n        }\n      ]\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "gemini-api",
+      "name": "Gemini API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.item.json;\nconst originalText = $('Construct Prompt').item.json.originalText;\n\nlet suggestions = [];\n\ntry {\n  const generatedText = response.candidates[0].content.parts[0].text;\n  \n  // Parse numbered list format\n  const lines = generatedText.split('\\n').filter(line => line.trim());\n  \n  suggestions = lines\n    .filter(line => /^\\d+\\./.test(line.trim()))\n    .map(line => line.replace(/^\\d+\\.\\s*/, '').trim())\n    .slice(0, 3);\n  \n  // Fallback if parsing fails\n  if (suggestions.length === 0) {\n    suggestions = [\n      \"ls -lah # list all files with human-readable sizes\",\n      \"find . -name '*.txt' # find all text files recursively\",\n      \"grep -r 'pattern' . # search for pattern in all files\"\n    ];\n  }\n} catch (error) {\n  suggestions = [\n    \"ls -lah # list all files with human-readable sizes\",\n    \"find . -name '*.txt' # find all text files recursively\",\n    \"grep -r 'pattern' . # search for pattern in all files\"\n  ];\n}\n\nreturn {\n  json: {\n    suggestions: suggestions,\n    originalText: originalText\n  }\n};"
+      },
+      "id": "response-parser",
+      "name": "Parse Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "respond-to-webhook",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Construct Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Construct Prompt": {
+      "main": [
+        [
+          {
+            "node": "Gemini API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini API": {
+      "main": [
+        [
+          {
+            "node": "Parse Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {}
+}
