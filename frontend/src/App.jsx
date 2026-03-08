@@ -337,15 +337,6 @@ function App() {
       {/* Footer */}
       <footer className="terminal-footer">
         <div className="footer-content">
-          <div className="footer-status">
-            <span className="status-item">
-              <span className="status-dot active"></span> ENGINE_UP
-            </span>
-            <span className="status-item">
-              <span className={`status-dot ${apiStatus === 'CONNECTED' ? 'active' : 'error'}`}></span> 
-              API_{apiStatus}
-            </span>
-          </div>
           <span className="footer-copyright">
             © 2026 | made w/ <code>sudo npm install coffee --save-dev</code> by{' '}
             <a 

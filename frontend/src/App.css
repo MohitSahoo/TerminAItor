@@ -727,7 +727,7 @@
   max-width: 1024px;
   margin: 0 auto;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   font-family: 'Space Mono', monospace;
   font-size: 0.875rem;
