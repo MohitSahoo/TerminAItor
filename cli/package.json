@@ -1,0 +1,41 @@
+{
+  "name": "terminaitor",
+  "version": "1.0.1",
+  "description": "AI-powered terminal command assistant",
+  "main": "index.js",
+  "bin": {
+    "terminai": "./index.js"
+  },
+  "keywords": [
+    "cli",
+    "terminal",
+    "ai",
+    "commands",
+    "assistant",
+    "shell",
+    "bash",
+    "automation"
+  ],
+  "author": "Mohit Sahoo <https://github.com/MohitSahoo>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MohitSahoo/TerminAItor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MohitSahoo/TerminAItor/issues"
+  },
+  "homepage": "https://github.com/MohitSahoo/TerminAItor#readme",
+  "dependencies": {
+    "commander": "^9.5.0",
+    "inquirer": "^8.2.5",
+    "chalk": "^4.1.2",
+    "ora": "^5.4.1",
+    "clipboardy": "^3.0.0",
+    "conf": "^10.2.0",
+    "node-fetch": "^2.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
