@@ -17,7 +17,6 @@ AI-powered terminal command assistant. Get intelligent command suggestions in re
 ### 1. Web App (Browser)
 Visit the live app and start typing commands instantly.
 
-**Live Demo:** https://termin-ai-tor.vercel.app/
 
 ### 2. CLI Tool (Terminal)
 Install globally and use directly in your terminal.
